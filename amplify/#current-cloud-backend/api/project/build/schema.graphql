@@ -1,0 +1,280 @@
+
+type Self {
+  id: ID!
+  name: String!
+  posts(filter: ModelFriendFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFriendConnection
+  alerts(filter: ModelAlertsFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelAlertsConnection
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Friend {
+  id: ID!
+  username: String!
+  email: String!
+  nickname: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  selfPostsId: ID
+}
+
+type Alerts {
+  id: ID!
+  from: String!
+  to: String!
+  message: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  selfAlertsId: ID
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelSelfConnection {
+  items: [Self]!
+  nextToken: String
+}
+
+input ModelSelfFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  and: [ModelSelfFilterInput]
+  or: [ModelSelfFilterInput]
+  not: ModelSelfFilterInput
+}
+
+type Query {
+  getSelf(id: ID!): Self
+  listSelves(filter: ModelSelfFilterInput, limit: Int, nextToken: String): ModelSelfConnection
+  getFriend(id: ID!): Friend
+  listFriends(filter: ModelFriendFilterInput, limit: Int, nextToken: String): ModelFriendConnection
+  getAlerts(id: ID!): Alerts
+  listAlerts(filter: ModelAlertsFilterInput, limit: Int, nextToken: String): ModelAlertsConnection
+}
+
+input ModelSelfConditionInput {
+  name: ModelStringInput
+  and: [ModelSelfConditionInput]
+  or: [ModelSelfConditionInput]
+  not: ModelSelfConditionInput
+}
+
+input CreateSelfInput {
+  id: ID
+  name: String!
+}
+
+input UpdateSelfInput {
+  id: ID!
+  name: String
+}
+
+input DeleteSelfInput {
+  id: ID!
+}
+
+type Mutation {
+  createSelf(input: CreateSelfInput!, condition: ModelSelfConditionInput): Self
+  updateSelf(input: UpdateSelfInput!, condition: ModelSelfConditionInput): Self
+  deleteSelf(input: DeleteSelfInput!, condition: ModelSelfConditionInput): Self
+  createFriend(input: CreateFriendInput!, condition: ModelFriendConditionInput): Friend
+  updateFriend(input: UpdateFriendInput!, condition: ModelFriendConditionInput): Friend
+  deleteFriend(input: DeleteFriendInput!, condition: ModelFriendConditionInput): Friend
+  createAlerts(input: CreateAlertsInput!, condition: ModelAlertsConditionInput): Alerts
+  updateAlerts(input: UpdateAlertsInput!, condition: ModelAlertsConditionInput): Alerts
+  deleteAlerts(input: DeleteAlertsInput!, condition: ModelAlertsConditionInput): Alerts
+}
+
+type Subscription {
+  onCreateSelf: Self @aws_subscribe(mutations: ["createSelf"])
+  onUpdateSelf: Self @aws_subscribe(mutations: ["updateSelf"])
+  onDeleteSelf: Self @aws_subscribe(mutations: ["deleteSelf"])
+  onCreateFriend: Friend @aws_subscribe(mutations: ["createFriend"])
+  onUpdateFriend: Friend @aws_subscribe(mutations: ["updateFriend"])
+  onDeleteFriend: Friend @aws_subscribe(mutations: ["deleteFriend"])
+  onCreateAlerts: Alerts @aws_subscribe(mutations: ["createAlerts"])
+  onUpdateAlerts: Alerts @aws_subscribe(mutations: ["updateAlerts"])
+  onDeleteAlerts: Alerts @aws_subscribe(mutations: ["deleteAlerts"])
+}
+
+type ModelFriendConnection {
+  items: [Friend]!
+  nextToken: String
+}
+
+input ModelFriendFilterInput {
+  id: ModelIDInput
+  username: ModelStringInput
+  email: ModelStringInput
+  nickname: ModelStringInput
+  and: [ModelFriendFilterInput]
+  or: [ModelFriendFilterInput]
+  not: ModelFriendFilterInput
+  selfPostsId: ModelIDInput
+}
+
+input ModelFriendConditionInput {
+  username: ModelStringInput
+  email: ModelStringInput
+  nickname: ModelStringInput
+  and: [ModelFriendConditionInput]
+  or: [ModelFriendConditionInput]
+  not: ModelFriendConditionInput
+  selfPostsId: ModelIDInput
+}
+
+input CreateFriendInput {
+  id: ID
+  username: String!
+  email: String!
+  nickname: String
+  selfPostsId: ID
+}
+
+input UpdateFriendInput {
+  id: ID!
+  username: String
+  email: String
+  nickname: String
+  selfPostsId: ID
+}
+
+input DeleteFriendInput {
+  id: ID!
+}
+
+type ModelAlertsConnection {
+  items: [Alerts]!
+  nextToken: String
+}
+
+input ModelAlertsFilterInput {
+  id: ModelIDInput
+  from: ModelStringInput
+  to: ModelStringInput
+  message: ModelStringInput
+  and: [ModelAlertsFilterInput]
+  or: [ModelAlertsFilterInput]
+  not: ModelAlertsFilterInput
+  selfAlertsId: ModelIDInput
+}
+
+input ModelAlertsConditionInput {
+  from: ModelStringInput
+  to: ModelStringInput
+  message: ModelStringInput
+  and: [ModelAlertsConditionInput]
+  or: [ModelAlertsConditionInput]
+  not: ModelAlertsConditionInput
+  selfAlertsId: ModelIDInput
+}
+
+input CreateAlertsInput {
+  id: ID
+  from: String!
+  to: String!
+  message: String
+  selfAlertsId: ID
+}
+
+input UpdateAlertsInput {
+  id: ID!
+  from: String
+  to: String
+  message: String
+  selfAlertsId: ID
+}
+
+input DeleteAlertsInput {
+  id: ID!
+}
+
